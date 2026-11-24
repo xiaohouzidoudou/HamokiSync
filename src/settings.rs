@@ -123,7 +123,36 @@ fn register_autostart() -> Result<(), String> {
     }
     std::fs::write(dir.join("hamokisync.desktop"), format!("[Desktop Entry]\nType=Application\nName=HamokiSync\nExec=\"{path}\"\nTerminal=false\nX-GNOME-Autostart-enabled=true\n")).map_err(|e| e.to_string())
 }
-#[cfg(not(any(windows, target_os = "linux")))]
+#[cfg(target_os = "macos")]
+fn register_autostart() -> Result<(), String> {
+    let daemon = std::env::current_exe()
+        .map_err(|e| e.to_string())?
+        .with_file_name("hamokisync-daemon");
+    if !daemon.is_file() {
+        return Err("未找到后台程序".into());
+    }
+    let home = directories::BaseDirs::new().ok_or("No home directory")?;
+    let dir = home.home_dir().join("Library/LaunchAgents");
+    std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
+    let path = daemon
+        .to_str()
+        .ok_or("Invalid executable path")?
+        .replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;");
+    let plist = format!(
+        r#"<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0"><dict>
+<key>Label</key><string>io.hamoki.HamokiSync</string>
+<key>ProgramArguments</key><array><string>{path}</string></array>
+<key>RunAtLoad</key><true/>
+<key>LimitLoadToSessionType</key><string>Aqua</string>
+</dict></plist>"#
+    );
+    std::fs::write(dir.join("io.hamoki.HamokiSync.plist"), plist).map_err(|e| e.to_string())
+}
+#[cfg(not(any(windows, target_os = "linux", target_os = "macos")))]
 fn register_autostart() -> Result<(), String> {
     Ok(())
 }

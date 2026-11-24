@@ -9,7 +9,11 @@
 - Ctrl + Alt + Z 恢复上一条剪贴板内容。
 - 托盘双箭头显示连接状态：绿色正常，红色异常，灰色等待。
 - 登录凭据通过系统凭据存储保存，服务器和用户名由用户自行配置。
-- Windows 和 Linux（X11/XFCE 等支持 StatusNotifierItem 的桌面）；其他平台尚未验收。
+- Windows、Linux（X11/XFCE 等支持 StatusNotifierItem 的桌面），以及 macOS 早期预览。
+
+## 下载
+
+前往 [GitHub Releases](https://github.com/xiaohouzidoudou/HamokiSync/releases) 获取 Windows x64 便携 ZIP、macOS Apple Silicon / Intel 通用 APP ZIP、Linux x86_64 TAR.GZ。各版本同时提供独立后台与设置二进制以及 SHA256 校验文件。首次使用推荐完整包。Mac 应用未经过 Apple 公证，仍需真机功能验收；Linux 需要 X11 及系统密钥存储服务。
 
 ## 使用
 
@@ -27,7 +31,7 @@ cargo build --locked --release --features settings --bin hamokisync-daemon --bin
 cargo test --locked --features settings
 ```
 
-将两个二进制放在同一目录，Windows 运行 hamokisync-settings.exe，Linux 运行 hamokisync-settings。首次验证并保存成功后自动注册登录启动；移动目录后需重新保存。Linux 的桌面启动器可使用 assets/hamokisync-green.png。
+将两个二进制放在同一目录，Windows 运行 hamokisync-settings.exe，Linux 运行 hamokisync-settings，macOS 解压并将 HamokiSync.app 移入 Applications 后打开。首次验证并保存成功后自动注册登录启动；移动目录后需重新保存。Linux 的桌面启动器可使用 assets/hamokisync-green.png。
 
 目前是早期版本，平台兼容性与真实设备互传仍需持续测试。若要卸载，先从托盘停止后台，移除系统登录启动项，再删除程序目录；如需清除已保存凭据及设置，请使用系统凭据管理器和用户配置目录。
 

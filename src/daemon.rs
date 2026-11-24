@@ -3,7 +3,7 @@
 mod runtime;
 #[path = "status.rs"]
 mod status;
-#[cfg(any(windows, target_os = "linux"))]
+#[cfg(any(windows, target_os = "linux", target_os = "macos"))]
 mod tray;
 
 use arboard::Clipboard;
@@ -223,11 +223,15 @@ fn run(mut clipboard: Clipboard, prefs: Preferences, password: String) -> Result
     let mut network_ok = true;
     let mut write_echo_until = Instant::now();
     let hotkey: Option<HotKey> = "Ctrl+Alt+Z".parse().ok();
+    #[cfg(not(target_os = "macos"))]
     let manager = GlobalHotKeyManager::new().ok();
+    #[cfg(not(target_os = "macos"))]
     let hotkey_id = match (&manager, hotkey) {
         (Some(manager), Some(key)) if manager.register(key).is_ok() => Some(key.id),
         _ => None,
     };
+    #[cfg(target_os = "macos")]
+    let hotkey_id = hotkey.map(|key| key.id);
     loop {
         pump_windows_messages();
         while let Ok(ev) = GlobalHotKeyEvent::receiver().try_recv() {
@@ -349,12 +353,105 @@ fn run(mut clipboard: Clipboard, prefs: Preferences, password: String) -> Result
     }
 }
 
+#[cfg(not(target_os = "macos"))]
 fn main() {
     if !single_instance() {
         return;
     }
-    // The tray must stay available even with no password or network.
     launch_tray();
+    sync_loop();
+}
+
+#[cfg(target_os = "macos")]
+fn main() {
+    use winit::{
+        application::ApplicationHandler,
+        event::WindowEvent,
+        event_loop::{ActiveEventLoop, ControlFlow, EventLoop},
+        platform::macos::{ActivationPolicy, EventLoopBuilderExtMacOS},
+        window::WindowId,
+    };
+    if !single_instance() {
+        return;
+    }
+    struct MacAgent {
+        tray: Option<tray::Tray>,
+        hotkey: Option<GlobalHotKeyManager>,
+        last_status: String,
+        next_status: Instant,
+    }
+    impl ApplicationHandler for MacAgent {
+        fn resumed(&mut self, _el: &ActiveEventLoop) {
+            if self.tray.is_none() {
+                self.tray = tray::Tray::new().ok();
+            }
+            if self.hotkey.is_none() {
+                self.hotkey = GlobalHotKeyManager::new().ok();
+                if let (Some(manager), Ok(key)) = (&self.hotkey, "Ctrl+Alt+Z".parse::<HotKey>()) {
+                    let _ = manager.register(key);
+                }
+            }
+        }
+        fn window_event(&mut self, _: &ActiveEventLoop, _: WindowId, _: WindowEvent) {}
+        fn about_to_wait(&mut self, el: &ActiveEventLoop) {
+            if let Some(tray) = &self.tray {
+                if Instant::now() >= self.next_status {
+                    let label = status::read();
+                    if label != self.last_status && tray.refresh_status(&label).is_ok() {
+                        self.last_status = label;
+                    }
+                    self.next_status = Instant::now() + Duration::from_secs(1);
+                }
+                if let Some(action) = tray.next_action() {
+                    match action {
+                        tray::TrayAction::Open => {
+                            if let Ok(exe) = std::env::current_exe() {
+                                let bundle = exe.ancestors().nth(3);
+                                if let Some(app) =
+                                    bundle.filter(|p| p.extension().is_some_and(|e| e == "app"))
+                                {
+                                    let _ = std::process::Command::new("/usr/bin/open")
+                                        .arg(app)
+                                        .spawn();
+                                } else {
+                                    let _ = std::process::Command::new(
+                                        exe.with_file_name("hamokisync-settings"),
+                                    )
+                                    .spawn();
+                                }
+                            }
+                        }
+                        tray::TrayAction::Exit => {
+                            status::write("stopped");
+                            el.exit();
+                        }
+                    }
+                }
+            }
+            el.set_control_flow(ControlFlow::WaitUntil(
+                Instant::now() + Duration::from_millis(100),
+            ));
+        }
+    }
+    let Ok(event_loop) = EventLoop::builder()
+        .with_activation_policy(ActivationPolicy::Accessory)
+        .with_default_menu(false)
+        .with_activate_ignoring_other_apps(false)
+        .build()
+    else {
+        return;
+    };
+    std::thread::spawn(sync_loop);
+    let mut app = MacAgent {
+        tray: None,
+        hotkey: None,
+        last_status: String::new(),
+        next_status: Instant::now(),
+    };
+    let _ = event_loop.run_app(&mut app);
+}
+
+fn sync_loop() {
     loop {
         pump_windows_messages();
         let prefs = load_preferences();
