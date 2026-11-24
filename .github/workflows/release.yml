@@ -1,4 +1,4 @@
-name: Build and publish v0.1.0
+name: Build and publish v0.1.1
 on:
   workflow_dispatch:
   push:
@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: hamokisync-release-v0.1.0
+  group: hamokisync-release-v0.1.1
   cancel-in-progress: false
 
 jobs:
@@ -84,10 +84,12 @@ jobs:
           for asset in HamokiSync-windows-x64.zip HamokiSync-linux-x64.tar.gz HamokiSync-macos-universal.zip hamokisync-daemon-windows-x64.exe hamokisync-daemon-linux-x64 hamokisync-daemon-macos-universal hamokisync-settings-windows-x64.exe hamokisync-settings-linux-x64 hamokisync-settings-macos-universal; do
             test -s "$asset"
           done
+          cp ../LICENSE LICENSE.txt
+          cp ../LICENSE-MIT-previous.txt LICENSE-MIT-previous.txt
           sha256sum * > SHA256SUMS.txt
           sha256sum -c SHA256SUMS.txt
-          if gh release view v0.1.0 >/dev/null 2>&1; then
+          if gh release view v0.1.1 >/dev/null 2>&1; then
             echo "Release already exists; refusing to overwrite a published version."
             exit 1
           fi
-          gh release create v0.1.0 --target "$GITHUB_SHA" --title "HamokiSync v0.1.0" --notes-file ../scripts/release-notes.md *
+          gh release create v0.1.1 --target "$GITHUB_SHA" --title "HamokiSync v0.1.1" --notes-file ../scripts/release-notes.md *

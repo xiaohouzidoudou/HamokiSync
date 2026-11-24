@@ -60,6 +60,7 @@ def windows(target_dir):
             shutil.copy2(target_dir / (b + ".exe"), d / (b + ".exe"))
         embed_windows_icon(d / "hamokisync-settings.exe")
         shutil.copy2(ROOT / "LICENSE", d / "LICENSE")
+        shutil.copy2(ROOT / "LICENSE-MIT-previous.txt", d / "LICENSE-MIT-previous.txt")
         shutil.copy2(ROOT / "README.md", d / "README.md")
         shutil.copy2(ICON, d / "hamokisync.png")
         for b in BINS:
@@ -80,6 +81,7 @@ def linux(target_dir):
         shutil.copy2(ICON, d / "hamokisync.png")
         shutil.copy2(ROOT / "README.md", d / "README.md")
         shutil.copy2(ROOT / "LICENSE", d / "LICENSE")
+        shutil.copy2(ROOT / "LICENSE-MIT-previous.txt", d / "LICENSE-MIT-previous.txt")
         shutil.copy2(ROOT / "scripts/install-linux.sh", d / "install.sh")
         (d / "install.sh").chmod(0o755)
         with tarfile.open(OUT / (name + ".tar.gz"), "w:gz") as t:
@@ -116,9 +118,11 @@ def macos(target_root):
                 "CFBundleIdentifier": "io.hamoki.HamokiSync",
                 "CFBundleExecutable": "hamokisync-settings",
                 "CFBundlePackageType": "APPL", "CFBundleIconFile": "HamokiSync.icns",
-                "CFBundleShortVersionString": "0.1.0", "CFBundleVersion": "1",
+                "CFBundleShortVersionString": "0.1.1", "CFBundleVersion": "2",
                 "NSHighResolutionCapable": True,
             }, f)
+        shutil.copy2(ROOT / "LICENSE", resources / "LICENSE")
+        shutil.copy2(ROOT / "LICENSE-MIT-previous.txt", resources / "LICENSE-MIT-previous.txt")
         command("codesign", "--force", "--sign", "-", "--timestamp=none", exe / BINS[0])
         command("codesign", "--force", "--sign", "-", "--timestamp=none", app)
         command("codesign", "--verify", "--deep", "--strict", app)

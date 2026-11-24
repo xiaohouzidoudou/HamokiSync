@@ -1,21 +1,50 @@
-MIT License
+HamokiSync Source-Available License 1.0
 
 Copyright (c) 2026 HamokiSync contributors
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Scope
+This license applies to the original work made available by its copyright
+holders under these terms, beginning with version 0.1.1 (the Software).
+It is a source-available license, not an OSI-approved open-source license.
+This license does not revoke or restrict rights already granted under the
+MIT License for earlier versions or portions of the Software, or under any
+applicable third-party license. The prior MIT notice is preserved in
+LICENSE-MIT-previous.txt.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. Permitted use
+Subject to these terms, you may use, inspect, copy, modify and compile the
+Software without a license fee for personal use, learning, research and
+internal operations of an organization, including a for-profit business.
+You may redistribute the Software or modifications on a noncommercial
+basis if you include this license, applicable copyright and third-party
+license notices, and clearly identify material modifications. Ordinary
+internal business use does not require additional permission.
 
+3. Commercial distribution and services
+Without prior written permission from the relevant copyright holders,
+you may not sell, rent or commercially distribute the Software or modified
+versions, bundle them as part of a paid product, or offer the Software
+itself to third parties as a commercial hosted, subscription or managed
+service. These restrictions do not prohibit an organization's internal use
+of the Software in its normal business operations. This section does not
+limit permissions independently granted under earlier or third-party licenses.
+
+4. Attribution
+Retain applicable copyright and license notices. Do not present a modified
+version as an official release or imply endorsement by its authors.
+No trademark rights are granted except as necessary for truthful attribution.
+
+5. Other components
+Third-party components remain subject to their own licenses. Nothing in
+this license alters those licenses or imposes additional restrictions on
+rights granted by them.
+
+6. Warranty and liability
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED
+BY APPLICABLE LAW, THE COPYRIGHT HOLDERS AND CONTRIBUTORS SHALL NOT BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE SOFTWARE
+OR ITS USE.
+
+For permissions outside these terms, contact the copyright holders.
