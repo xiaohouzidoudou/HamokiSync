@@ -1,0 +1,12 @@
+/target/
+/target-*/
+/dist/
+*.log
+*.swp
+.env
+.env.*
+settings.json
+connection-status.json
+*.exe
+*.zip
+__pycache__/

@@ -1,0 +1,58 @@
+[package]
+name = "hamokisync-lite"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Independent low-overhead clipboard sync, compatible with SyncClipboard Server"
+license = "MIT"
+
+[lib]
+name = "hamokisync_lite"
+path = "src/lib.rs"
+
+[features]
+default = ["headless"]
+headless = [
+    "dep:arboard",
+    "dep:global-hotkey",
+    "dep:keyring",
+    "dep:directories",
+    "dep:tray-icon",
+]
+settings = ["headless", "dep:eframe"]
+
+[dependencies]
+base64 = "0.22"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+url = "2.5"
+ureq = { version = "2.12", default-features = false, features = ["tls"] }
+png = "0.17"
+arboard = { version = "3.7", optional = true }
+global-hotkey = { version = "0.10", optional = true }
+keyring = { version = "4.2", optional = true }
+tray-icon = { version = "0.26.1", default-features = false, features = ["ksni"], optional = true }
+directories = { version = "6.0", optional = true }
+eframe = { version = "0.31", default-features = false, features = ["default_fonts", "glow", "x11", "wayland"], optional = true }
+
+[target.'cfg(windows)'.dependencies]
+winreg = "0.55"
+windows-sys = { version = "0.61", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation"] }
+
+[[bin]]
+name = "hamokisync-daemon"
+path = "src/daemon.rs"
+required-features = ["headless"]
+
+[[bin]]
+name = "hamokisync-settings"
+path = "src/settings.rs"
+required-features = ["settings"]
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
