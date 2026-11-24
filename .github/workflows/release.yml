@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/release.yml"
+      - "scripts/package.py"
 permissions:
   contents: read
 concurrency:

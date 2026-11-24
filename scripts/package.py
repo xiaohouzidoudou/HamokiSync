@@ -100,7 +100,7 @@ def macos(target_root):
                     target_root / "x86_64-apple-darwin/release" / b,
                     "-output", exe / b)
             (exe / b).chmod(0o755)
-            command("lipo", "-verify_arch", "arm64", "x86_64", exe / b)
+            command("lipo", exe / b, "-verify_arch", "arm64", "x86_64")
         # ICNS with native-size PNG and high-resolution icons from project art.
         iconset = d / "HamokiSync.iconset"
         iconset.mkdir()
